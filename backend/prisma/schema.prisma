@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model ClassStream {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+
+  students  Student[]
+  subjects  StreamSubject[]
+
+  createdAt DateTime @default(now())
+}
+
+model Student {
+  id            Int      @id @default(autoincrement())
+  admissionNo   String   @unique
+  firstName     String
+  lastName      String
+
+  streamId Int
+  stream   ClassStream @relation(fields:[streamId], references:[id])
+
+  scores Score[]
+
+  createdAt DateTime @default(now())
+}
+
+model Subject {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+
+  streams   StreamSubject[]
+  scores    Score[]
+
+  createdAt DateTime @default(now())
+}
+
+model StreamSubject {
+  id Int @id @default(autoincrement())
+
+  streamId Int
+  subjectId Int
+
+  stream  ClassStream @relation(fields:[streamId], references:[id])
+  subject Subject     @relation(fields:[subjectId], references:[id])
+
+  @@unique([streamId, subjectId])
+}
+
+model Score {
+  id Int @id @default(autoincrement())
+
+  studentId Int
+  subjectId Int
+
+  catScore  Float
+  examScore Float
+  total     Float
+
+  student Student @relation(fields:[studentId], references:[id])
+  subject Subject @relation(fields:[subjectId], references:[id])
+
+  @@unique([studentId, subjectId])
+}
