@@ -1,65 +1,127 @@
-import { useState } from "react";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import { useState, useEffect } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+
+      if (window.innerWidth > 768) {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div style={styles.container}>
-      {/* MOBILE TOP BAR */}
-      <div style={styles.topbar}>
-        <button onClick={() => setOpen(!open)} style={styles.menuBtn}>
-          ☰
-        </button>
+      {/* MOBILE TOPBAR */}
+      {isMobile && (
+        <div style={styles.topbar}>
+          <button
+            onClick={() => setOpen(!open)}
+            style={styles.menuBtn}
+          >
+            ☰
+          </button>
 
-        <h3 style={{ margin: 0 }}>IKONEX SYSTEM</h3>
-      </div>
+          <h3 style={{ margin: 0 }}>IKONEX SYSTEM</h3>
+        </div>
+      )}
 
       {/* SIDEBAR */}
       <aside
         style={{
           ...styles.sidebar,
           transform:
-            open || window.innerWidth > 768
+            open || !isMobile
               ? "translateX(0)"
               : "translateX(-100%)",
         }}
       >
         <h2 style={styles.logo}>IKONEX</h2>
 
-        <NavLink to="/" style={styles.link} onClick={() => setOpen(false)}>
+        <NavLink
+          to="/"
+          style={styles.link}
+          onClick={() => setOpen(false)}
+        >
           Dashboard
         </NavLink>
 
-        <NavLink to="/streams" style={styles.link} onClick={() => setOpen(false)}>
-          Streams
-        </NavLink>
-
-        <NavLink to="/students" style={styles.link} onClick={() => setOpen(false)}>
+        <NavLink
+          to="/students"
+          style={styles.link}
+          onClick={() => setOpen(false)}
+        >
           Students
         </NavLink>
 
-        <NavLink to="/subjects" style={styles.link} onClick={() => setOpen(false)}>
+        <NavLink
+          to="/streams"
+          style={styles.link}
+          onClick={() => setOpen(false)}
+        >
+          Streams
+        </NavLink>
+
+        <NavLink
+          to="/subjects"
+          style={styles.link}
+          onClick={() => setOpen(false)}
+        >
           Subjects
         </NavLink>
 
-        <NavLink to="/scores" style={styles.link} onClick={() => setOpen(false)}>
+        <NavLink
+          to="/scores"
+          style={styles.link}
+          onClick={() => setOpen(false)}
+        >
           Scores
         </NavLink>
 
-        <NavLink to="/reports" style={styles.link} onClick={() => setOpen(false)}>
+        <NavLink
+          to="/reports"
+          style={styles.link}
+          onClick={() => setOpen(false)}
+        >
           Reports
         </NavLink>
       </aside>
 
-      {/* OVERLAY (mobile only) */}
-      {open && (
-        <div style={styles.overlay} onClick={() => setOpen(false)} />
+      {/* MOBILE OVERLAY */}
+      {open && isMobile && (
+        <div
+          style={styles.overlay}
+          onClick={() => setOpen(false)}
+        />
       )}
 
-      {/* MAIN CONTENT */}
-      <main style={styles.main}>
-        <Outlet />
+      {/* MAIN SECTION */}
+      <main
+        style={{
+          ...styles.main,
+          marginLeft: isMobile ? 0 : 250,
+        }}
+      >
+        <Header onMenuClick={() => setOpen(!open)} />
+
+        <div style={styles.content}>
+          <Outlet />
+        </div>
+
+        <Footer />
       </main>
     </div>
   );
@@ -72,50 +134,49 @@ const styles = {
     background: "#f5f7fb",
   },
 
-  /* TOP BAR (mobile) */
   topbar: {
     position: "fixed",
     top: 0,
     left: 0,
     right: 0,
-    height: "55px",
+    height: "60px",
     background: "#1e293b",
-    color: "white",
+    color: "#fff",
     display: "flex",
     alignItems: "center",
     gap: "15px",
     padding: "0 15px",
-    zIndex: 1000,
+    zIndex: 1200,
   },
 
   menuBtn: {
-    fontSize: "22px",
+    fontSize: "24px",
     background: "none",
     border: "none",
-    color: "white",
+    color: "#fff",
     cursor: "pointer",
   },
 
-  /* SIDEBAR */
   sidebar: {
     position: "fixed",
     top: 0,
     left: 0,
-    height: "100%",
     width: "250px",
+    height: "100vh",
     background: "#1e293b",
     color: "#fff",
     padding: "20px",
     display: "flex",
     flexDirection: "column",
     gap: "10px",
-    transition: "0.3s",
-    zIndex: 1100,
+    transition: "transform 0.3s ease",
+    zIndex: 1300,
+    boxSizing: "border-box",
   },
 
   logo: {
-    marginBottom: "20px",
     textAlign: "center",
+    marginBottom: "20px",
   },
 
   link: {
@@ -124,16 +185,25 @@ const styles = {
     padding: "12px",
     borderRadius: "8px",
     background: "#334155",
+    fontWeight: "500",
   },
 
-  /* MAIN CONTENT */
   main: {
     flex: 1,
-    marginLeft: "250px",
-    padding: "80px 20px 20px",
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "100vh",
+    width: "100%",
+    boxSizing: "border-box",
   },
 
-  /* MOBILE OVERLAY */
+  content: {
+    flex: 1,
+    padding: "20px",
+    marginTop: "10px",
+    overflowX: "auto",
+  },
+
   overlay: {
     position: "fixed",
     top: 0,
@@ -141,6 +211,6 @@ const styles = {
     right: 0,
     bottom: 0,
     background: "rgba(0,0,0,0.4)",
-    zIndex: 1000,
+    zIndex: 1250,
   },
 };
