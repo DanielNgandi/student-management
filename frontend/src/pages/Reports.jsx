@@ -24,7 +24,7 @@ export default function Reports() {
     setLoading(true);
 
     const response = await api.get(
-      `/reports/student/${studentId}`, // ✅ FIXED HERE
+      `/reports/student/${studentId}`, 
       {
         responseType: "blob",
       }
