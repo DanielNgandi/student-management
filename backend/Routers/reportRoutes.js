@@ -2,7 +2,7 @@ import express from "express";
 
 import {
   generateStudentReport,
-} from "../Controllers/reportController.js";
+} from "../controllers/reportController.js";
 
 const router = express.Router();
 
