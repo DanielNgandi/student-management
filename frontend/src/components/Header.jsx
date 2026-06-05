@@ -1,33 +1,49 @@
 import { useState } from "react";
+import { IconButton, InputBase, Paper, Avatar, Badge } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import SearchIcon from "@mui/icons-material/Search";
 
 export default function Header({ onMenuClick }) {
   const [search, setSearch] = useState("");
 
   return (
-    <header style={styles.header}>
+    <div style={styles.header}>
+      {/* LEFT */}
       <div style={styles.left}>
-        <button onClick={onMenuClick} style={styles.menuBtn}>
-          ☰
-        </button>
+        <IconButton onClick={onMenuClick}>
+          <MenuIcon />
+        </IconButton>
 
         <h2 style={styles.logo}>IKONEX</h2>
       </div>
 
-      <div style={styles.center}>
-        <input
-          type="text"
+      {/* SEARCH */}
+      <Paper component="form" style={styles.searchBox}>
+        <SearchIcon style={{ marginLeft: 10 }} />
+        <InputBase
           placeholder="Search students..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          style={styles.search}
+          style={{ marginLeft: 10, flex: 1 }}
         />
-      </div>
+      </Paper>
 
+      {/* RIGHT */}
       <div style={styles.right}>
-        <button style={styles.icon}>🔔</button>
-        <button style={styles.icon}>👤</button>
+        <IconButton>
+          <Badge badgeContent={3} color="error">
+            <NotificationsIcon />
+          </Badge>
+        </IconButton>
+
+        <IconButton>
+          <Avatar sx={{ width: 32, height: 32 }}>
+            A
+          </Avatar>
+        </IconButton>
       </div>
-    </header>
+    </div>
   );
 }
 
@@ -36,10 +52,10 @@ const styles = {
     height: "65px",
     background: "#fff",
     display: "flex",
-    justifyContent: "space-between",
     alignItems: "center",
-    padding: "0 20px",
-    borderBottom: "1px solid #ddd",
+    justifyContent: "space-between",
+    padding: "0 15px",
+    borderBottom: "1px solid #e5e7eb",
     position: "sticky",
     top: 0,
     zIndex: 100,
@@ -54,39 +70,21 @@ const styles = {
   logo: {
     margin: 0,
     color: "#1e293b",
+    fontSize: "18px",
   },
 
-  center: {
-    flex: 1,
+  searchBox: {
     display: "flex",
-    justifyContent: "center",
-  },
-
-  search: {
-    width: "100%",
-    maxWidth: "400px",
-    padding: "10px",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
+    alignItems: "center",
+    width: "40%",
+    padding: "2px 10px",
+    boxShadow: "none",
+    border: "1px solid #e5e7eb",
   },
 
   right: {
     display: "flex",
+    alignItems: "center",
     gap: "10px",
-  },
-
-  menuBtn: {
-    border: "none",
-    background: "none",
-    cursor: "pointer",
-    fontSize: "22px",
-  },
-
-  icon: {
-    border: "none",
-    background: "#f1f5f9",
-    padding: "10px",
-    borderRadius: "50%",
-    cursor: "pointer",
   },
 };

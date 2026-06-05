@@ -3,7 +3,7 @@ import api from "../api/axios";
 
 export default function Reports() {
   const [students, setStudents] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loadingId, setLoadingId] = useState(null); // 🔥 FIX HERE
 
   useEffect(() => {
     fetchStudents();
@@ -18,30 +18,30 @@ export default function Reports() {
     }
   };
 
-  // 🔥 GENERATE REPORT
+  // 🔥 GENERATE REPORT (FIXED)
   const generateReport = async (studentId) => {
-  try {
-    setLoading(true);
+    try {
+      setLoadingId(studentId); // only this student is loading
 
-    const response = await api.get(
-      `/reports/student/${studentId}`, 
-      {
-        responseType: "blob",
-      }
-    );
+      const response = await api.get(
+        `/reports/student/${studentId}`,
+        {
+          responseType: "blob",
+        }
+      );
 
-    const url = window.URL.createObjectURL(
-      new Blob([response.data], { type: "application/pdf" })
-    );
+      const url = window.URL.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
 
-    window.open(url);
-  } catch (error) {
-    console.error("Error generating report", error);
-    alert("Failed to generate report");
-  } finally {
-    setLoading(false);
-  }
-};
+      window.open(url);
+    } catch (error) {
+      console.error("Error generating report", error);
+      alert("Failed to generate report");
+    } finally {
+      setLoadingId(null); // reset loading
+    }
+  };
 
   return (
     <div style={styles.container}>
@@ -67,16 +67,18 @@ export default function Reports() {
             </p>
 
             <button
-              style={styles.btn}
-              onClick={() =>
-                generateReport(
-                  s.id,
-                  `${s.firstName} ${s.lastName}`
-                )
-              }
-              disabled={loading}
+              style={{
+                ...styles.btn,
+                opacity: loadingId === s.id ? 0.6 : 1,
+                cursor:
+                  loadingId === s.id ? "not-allowed" : "pointer",
+              }}
+              onClick={() => generateReport(s.id)}
+              disabled={loadingId === s.id}
             >
-              {loading ? "Generating..." : "Download Report"}
+              {loadingId === s.id
+                ? "Generating..."
+                : "Download Report"}
             </button>
           </div>
         ))}
@@ -97,7 +99,8 @@ const styles = {
 
   grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+    gridTemplateColumns:
+      "repeat(auto-fit, minmax(240px, 1fr))",
     gap: "15px",
   },
 
@@ -121,7 +124,6 @@ const styles = {
     border: "none",
     padding: "10px",
     borderRadius: "8px",
-    cursor: "pointer",
     width: "100%",
   },
 };
