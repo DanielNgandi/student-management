@@ -7,7 +7,7 @@ import {
   updateSubject,
   deleteSubject,
   assignSubjectToStream,
-} from "../controllers/subjectController.js";
+} from "../Controllers/subjectController.js";
 
 const router = express.Router();
 

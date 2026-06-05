@@ -6,7 +6,7 @@ import {
   getStream,
   updateStream,
   deleteStream,
-} from "../controllers/streamController.js";
+} from "../Controllers/streamController.js";
 
 const router = express.Router();
 

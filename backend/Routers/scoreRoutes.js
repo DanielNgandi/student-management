@@ -7,7 +7,7 @@ import {
   updateScore,
   getStudentPerformance,
   getClassPerformance,
-} from "../controllers/scoreController.js";
+} from "../Controllers/scoreController.js";
 
 const router = express.Router();
 
